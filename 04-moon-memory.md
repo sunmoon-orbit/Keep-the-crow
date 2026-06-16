@@ -68,31 +68,62 @@ CREATE TABLE memories (
 }
 ```
 
-暴露给 CC 的 MCP 工具示例：
+暴露给 CC 的 MCP 工具：
 
 | 工具名 | 作用 |
 |--------|------|
 | `write_memory` | 写入一条新记忆 |
-| `search_memories` | 关键词搜索记忆 |
-| `semantic_search` | 语义相似度搜索（需要 embedding 模型） |
+| `search_memories` | FTS5 全文搜索（≥3字用索引，短词回退 LIKE）|
+| `semantic_search` | 向量语义搜索（需要 embedding API）|
 | `get_memory` | 按 ID 获取记忆详情 |
 | `list_memories` | 列出最近记忆 |
 | `get_stats` | 统计记忆库概况 |
-| `get_current_time` | 获取当前时间（注入上下文） |
+| `get_current_time` | 获取当前时间（北京时间）|
+| `memory_breath` | 按遗忘曲线返回此刻最鲜活的记忆 |
+| `memory_trace` | 调整 importance / pinned / resolved |
+| `get_anniversaries` | 纪念日列表 |
+
+---
+
+## 搜索策略
+
+moon-memory 提供三种搜索路径，结合使用效果最好：
+
+| 路径 | 适用场景 | 依赖 |
+|------|---------|------|
+| `search_memories` (FTS5 trigram) | 精确词语、人名、事件名 | 仅 SQLite，无外部 API |
+| `semantic_search` (向量) | 模糊语义，如「她说过的关于家人的话」| SiliconFlow API |
+| `memory_breath` (遗忘曲线) | 「现在最该想起什么」| 无外部依赖 |
+
+FTS5 trigram 的限制：查询词须 ≥3 个 Unicode 字符（中文2字会自动回退到 LIKE，仍能找到结果）。
 
 ---
 
 ## REST API
 
 ```
-POST   /memories          创建记忆
-GET    /memories          列出记忆（支持分页、过滤）
-PATCH  /memories/:id      更新记忆
-DELETE /memories/:id      删除记忆
+POST   /memories              创建记忆
+GET    /memories              列出记忆（?q= 关键词 LIKE 过滤）
+GET    /memories/filter       同上，支持更多过滤参数
+GET    /memories/fts?q=       FTS5 全文搜索（推荐，不依赖向量 API）
+GET    /memories/semantic?q=  向量语义搜索
+GET    /memories/breath       按遗忘曲线浮现最鲜活记忆
+GET    /memories/heatmap      过去 84 天记忆数热力图
+PATCH  /memories/:id          更新记忆
+POST   /memories/:id/trash    软删除（可恢复）
+POST   /memories/:id/restore  从回收站恢复
 
-GET    /context           获取当前时间等上下文（公开）
-POST   /backup/trigger    手动触发备份到 GitHub
-GET    /backup/status     查看备份状态
+GET    /context/time          获取当前时间（公开，无需认证）
+POST   /backup/trigger        手动触发备份到 GitHub
+GET    /backup/status         查看备份状态
+
+# L0 对话存档
+POST   /archive/conversations              创建对话（external_id 幂等）
+POST   /archive/conversations/:id/messages 追加消息
+GET    /archive/conversations              列出所有对话
+GET    /archive/conversations/:id          单条对话 + 消息列表
+GET    /archive/search?q=                  FTS5 全文搜索原文
+POST   /archive/import/claude-ai           批量导入 claude.ai 导出 JSON
 ```
 
 所有写操作需要 Bearer Token：
@@ -138,6 +169,40 @@ EMBEDDING_MODEL=BAAI/bge-m3
 
 ---
 
+## L0 对话存档
+
+L0 层存储对话**原文**，永不删除，补充 L2（精华记忆条目）的不足。
+
+### 自动存档
+
+raven-bridge 会自动把每次 raven 前端的对话存档：
+- 按北京时间每天一个对话（external_id = `raven-YYYY-MM-DD`）
+- 阿颖发消息和 AI 回复都会实时追加
+- 服务重启后继续写当天同一个对话，不会断
+
+### 导入 claude.ai 历史记录
+
+claude.ai 账号导出的 conversations.json 可以批量导入：
+
+```bash
+# 把导出的文件传到服务器
+scp conversations.json ripple@<服务器IP>:/tmp/
+
+# SSH 进服务器，运行导入脚本
+node /home/ripple/moon-memory/scripts/import-claude-ai.js /tmp/conversations.json
+
+# 可以先预览不写入
+node /home/ripple/moon-memory/scripts/import-claude-ai.js /tmp/conversations.json --dry-run
+```
+
+重复导入是安全的（external_id 幂等，不会重复写入）。
+
+### 搜索存档
+
+MCP 工具 `search_archive` 可以搜对话原文；REST 端点 `GET /archive/search?q=` 同理。
+
+---
+
 ## 数据备份
 
 moon-memory 支持自动备份到 GitHub（每天凌晨定时，或手动触发）。
@@ -159,3 +224,10 @@ cd moon-memory
 npm install
 pm2 start server.js --name moon-memory
 ```
+
+---
+
+## 参考与致谢
+
+- **Paramecium**（草履虫记忆架构）by [@Shitsuten](https://github.com/Shitsuten/paramecium)
+  L0/L1/L2 三层架构思路、FTS5 + 向量混合搜索策略、prompt cache 分层优化均参考此项目。核心理念「原文是唯一真相」影响了 L0 存档层的设计。

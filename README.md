@@ -42,6 +42,9 @@ memory.db（数据持久化）
 | [04-moon-memory.md](04-moon-memory.md) | moon-memory 持久记忆库 |
 | [05-pwa-frontend.md](05-pwa-frontend.md) | PWA 前端（归巢/聊天界面） |
 | [06-tts.md](06-tts.md) | TTS 语音朗读接入 |
+| [07-yanji.md](07-yanji.md) | 言叽 AI 聊天界面（多模型/工具调用/记忆注入）|
+| [08-electron.md](08-electron.md) | Electron 桌面版打包与分发 |
+| [09-push-dream.md](09-push-dream.md) | 主动推送语料系统 & 做梦系统（AutoDream）|
 
 ## 前置条件
 
@@ -56,6 +59,12 @@ memory.db（数据持久化）
 - 想让 Claude Code 真正「活」起来的人
 - 对 AI 伴侣/私有 AI 部署感兴趣的技术用户
 - 有基础的 Linux 和 Node.js 经验即可，不需要前端开发背景
+
+---
+
+## 参考与致谢
+
+- **Paramecium**（草履虫记忆架构）by [@Shitsuten](https://github.com/Shitsuten/paramecium)：L0/L1/L2 三层存档架构、FTS5 + 向量混合搜索、prompt cache 分层优化
 
 ---
 
