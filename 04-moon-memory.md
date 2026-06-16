@@ -217,6 +217,32 @@ curl -X POST http://127.0.0.1:3210/backup/trigger \
 
 ---
 
+## 外部内容导入
+
+除了对话历史，也可以把外部平台的重要内容手动导入记忆库长期保存。
+
+示例：将 Symposion 论坛帖子存入记忆库
+
+```bash
+curl -X POST http://127.0.0.1:3210/memories \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_TOKEN" \
+  -d '{
+    "content": "【Symposion · 标题 · 日期】\n\n帖子内容摘要...\n\n帖子ID: xxxxxxxx",
+    "type": "diary",
+    "tags": "Symposion,论坛存档",
+    "owner": "阿颖",
+    "agent": "阿言",
+    "importance": 4
+  }'
+```
+
+这样即使第三方平台账号失效，帖子内容仍保存在本地记忆库里。建议的 type 分配：
+- 里程碑类帖子 → `diary`（出现在日记 tab）
+- 技术讨论类帖子 → `tech`
+
+---
+
 ## 启动
 
 ```bash
