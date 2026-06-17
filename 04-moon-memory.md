@@ -205,14 +205,22 @@ MCP 工具 `search_archive` 可以搜对话原文；REST 端点 `GET /archive/se
 
 ## 数据备份
 
-moon-memory 支持自动备份到 GitHub（每天凌晨定时，或手动触发）。
+moon-memory 三路备份：本地快照、GitHub、Supabase（每天凌晨定时，或手动触发）。
 
-备份用 `VACUUM INTO` 生成 SQLite 一致性快照，绝不直接 copy 数据库文件（WAL 模式下直接 copy 会丢数据）。
+备份用 `VACUUM INTO` 生成 SQLite 一致性快照，绝不直接 copy 数据库文件（WAL 模式下直接 copy 会丢数据）。活跃库实际路径是 `data/memory.db`。
 
 ```bash
 # 手动触发备份
 curl -X POST http://127.0.0.1:3210/backup/trigger \
   -H "Authorization: Bearer YOUR_API_TOKEN"
+```
+
+**GitHub 那路存 gzip 而非裸 db**：SQLite 快照会随 L0 对话存档持续增长，一旦单文件超过 GitHub 的 100MB 硬上限，`git push` 会被直接拒绝、备份悄悄中断。所以 `routes/backup.js` 里 git 只提交 `backups/memory.db.gz`（zlib 压缩，约半大小），裸 db 不进 git。Supabase 那路上传函数本身自带 gzip。
+
+恢复时记得先解压：
+
+```bash
+gunzip -c backups/memory.db.gz > data/memory.db
 ```
 
 ---

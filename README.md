@@ -45,6 +45,7 @@ memory.db（数据持久化）
 | [07-yanji.md](07-yanji.md) | 言叽 AI 聊天界面（多模型/工具调用/记忆注入）|
 | [08-electron.md](08-electron.md) | Electron 桌面版打包与分发 |
 | [09-push-dream.md](09-push-dream.md) | 主动推送语料系统 & 做梦系统（AutoDream）|
+| [10-server-migration.md](10-server-migration.md) | 换服务器迁移清单（数据备份 / VAPID 键 / Caddy）|
 
 ## 前置条件
 

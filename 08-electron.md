@@ -50,7 +50,7 @@ cd dist && zip -r yanji-win-x64.zip win-unpacked/
 
 ```bash
 # raven-www/index.html 预处理
-sed 's|/raven/|https://memory.ravenlove.cc/raven/|g' raven/index.html > electron-app/raven-www/index.html
+sed 's|/raven/|https://your-domain.com/raven/|g' raven/index.html > electron-app/raven-www/index.html
 ```
 
 然后：
@@ -95,8 +95,8 @@ Linux 上 electron-builder 无法生成合法签名的 Windows exe（需要 wine
 zip 文件复制到 `raven/` 目录，由 raven-bridge 静态服务对外提供：
 
 ```
-https://memory.ravenlove.cc/raven/yanji-win-x64.zip
-https://memory.ravenlove.cc/raven/guichao-win-x64.zip
+https://your-domain.com/raven/yanji-win-x64.zip
+https://your-domain.com/raven/guichao-win-x64.zip
 ```
 
 raven-bridge 的静态文件路由使用 `fs.createReadStream().pipe(res)` 流式传输，避免 116MB 文件一次性读进内存。
