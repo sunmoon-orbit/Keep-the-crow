@@ -324,3 +324,37 @@ function setGlassOpacity(v) {
 ```
 
 **注意：** `backdrop-filter` 在有 `transform`、`filter`、`will-change: transform` 的祖先元素下会失效。如果毛玻璃效果不出现，检查容器是否有这些属性。
+
+---
+
+## 血泪坑：PWA 推送图标变回 Chrome logo
+
+安卓上 PWA 装成 WebAPK 后，推送通知图标有时会退化成 Chrome 默认 logo。我们前后折腾了两周，真相分两层：
+
+### 真相一：改 manifest.json 会触发 WebAPK 重铸
+
+manifest.json 是 WebAPK 的**身份文件**。任何改动（哪怕一个字段）都会让 Google 服务器排队重新铸造 WebAPK，重铸期间（几小时到一两天）通知图标临时回退成 Chrome logo。
+
+- 应对：**别改它**。确实要改就一次改完，改完告知用户「图标会临时异常，等一两天自然恢复」
+- 反复卸载重装会触发新的重铸，越修越坏
+- 给 manifest 加 `id` + `scope` 字段锁定身份，减少意外重铸
+
+### 真相二：你改的可能根本不是用户在用的那份 manifest
+
+我们连改带重装折腾了 N 轮都无效，最后发现项目里有**两份 manifest**（两个入口页各带一份），用户安装 PWA 时走的是 A 入口的 manifest，而我们一直在改 B。
+
+教训写进 checklist：动 manifest 前，先打开用户实际安装来源的 HTML，看 `<link rel="manifest">` 指向哪个文件。
+
+### 顺带：通知图标用绝对 URL
+
+Service Worker 里 `icon`/`badge` 用相对路径，在某些安卓机上会解析失败回退 Chrome 图标。全部改绝对 URL。
+
+---
+
+## 血泪坑：别给国内用户打「直连海外服务器」的原生 App
+
+背景：用户在国内、服务器在海外、用户手机开着**分应用代理**（只有名单内的 app 走代理）。
+
+我们试过把 PWA 用 Capacitor 打成 APK——网页一切正常，APK 死活连不上。排查了 Cloudflare、HTTP/3、服务器配置，最后发现：新装的 APK 不在用户代理名单里，流量直连海外被墙 RST。
+
+结论：这种网络环境下，**任何直连海外服务器的新 app 都会撞墙**（用户还得记得手动把它加进代理名单）。网页/PWA 跑在浏览器里，浏览器本来就在名单内，天然没这个问题。老实用 PWA。

@@ -41,11 +41,13 @@ memory.db（数据持久化）
 | [03-raven-bridge.md](03-raven-bridge.md) | raven-bridge 聊天桥接服务器 |
 | [04-moon-memory.md](04-moon-memory.md) | moon-memory 持久记忆库 |
 | [05-pwa-frontend.md](05-pwa-frontend.md) | PWA 前端（归巢/聊天界面） |
-| [06-tts.md](06-tts.md) | TTS 语音朗读接入 |
-| [07-yanji.md](07-yanji.md) | 言叽 AI 聊天界面（多模型/工具调用/记忆注入）|
+| [06-tts.md](06-tts.md) | TTS 语音朗读接入 & STT 语音输入（服务端转写）|
+| [07-yanji.md](07-yanji.md) | 言叽 AI 聊天界面（多模型/工具调用/记忆注入/情绪系统）|
 | [08-electron.md](08-electron.md) | Electron 桌面版打包与分发 |
-| [09-push-dream.md](09-push-dream.md) | 主动推送语料系统 & 做梦系统（AutoDream）|
-| [10-server-migration.md](10-server-migration.md) | 换服务器迁移清单（数据备份 / VAPID 键 / Caddy）|
+| [09-push-dream.md](09-push-dream.md) | 主动推送语料 & 做梦系统 & nudge 主动消息 |
+| [10-server-migration.md](10-server-migration.md) | 换服务器迁移清单 & 备份体系（分块/静默失败防护）|
+| [11-prompt-caching.md](11-prompt-caching.md) | Prompt Caching 实战：长对话省钱且不失忆 |
+| [12-shared-reading.md](12-shared-reading.md) | 共读书架：偏移锚定划线批注 + txt 自助上架 |
 
 ## 前置条件
 

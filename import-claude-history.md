@@ -60,3 +60,31 @@ node /home/ripple/moon-memory/scripts/import-claude-ai.js /tmp/conversations.jso
 ## 搜索存档
 
 导入后，在 raven 前端可以让阿言用 `search_archive` 工具搜历史原文，或者直接问他"我们之前聊过……"。
+
+---
+
+## 踩坑补遗（导入大文件/新版导出格式）
+
+### 1. 新版导出的正文可能不在 text 字段
+
+claude.ai 导出格式悄悄变过：消息正文有时在 `content` 数组里而不是顶层 `text` 字段。只读 `text` 的导入脚本会产出一堆**空对话**且不报错。解析时两个都要兜：
+
+```javascript
+const text = msg.text || (Array.isArray(msg.content)
+  ? msg.content.map(c => c.text || '').join('') : '')
+```
+
+另外「导出最近 30 天」有时不含正文，要导就导全部数据。
+
+### 2. 大文件导入 Failed to fetch = 撞了 body 上限
+
+几十 MB 的 conversations.json 直接 POST，会被 express 的 json 上限掐断连接，浏览器只报一句 `Failed to fetch`。放开导入路由的上限只是止痛；根本解法是**客户端分批上传**（每批 10-20 条对话），文件再大也不撞墙。
+
+### 3. 「重复导入安全」的前提是 ID 归一化 + 消息级去重
+
+两个真实事故：
+
+- 老脚本给 external_id 加了前缀（`claude_ai_<uuid>`）、新脚本用裸 uuid——同一对话在库里存了两份，去重完全失配。**导入 ID 的格式定了就不要改**；改了就要写迁移把旧 ID 归一化。
+- 对话级幂等 ≠ 消息级幂等：脚本判断「对话已存在就跳过」，但另一条代码路径对已存在对话**追加插入全部消息**——重复导入后每条消息 ×2。去重要做到消息级（对话内容 hash 或消息指纹）。
+
+清理重复时保留内容更全的版本，并记得把批注/标注迁移过去再删。以及：**别拿生产库测试导入脚本**。

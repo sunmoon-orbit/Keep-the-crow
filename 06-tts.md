@@ -215,3 +215,38 @@ const ttsLimiter = rateLimit({
 
 app.use('/tts', ttsLimiter, ttsRouter)
 ```
+
+---
+
+## STT 语音输入（反方向：语音转文字）
+
+### 别用 Web Speech API（安卓 Chrome 是坏的）
+
+`webkitSpeechRecognition` 在安卓 Chrome 上**实际不可用**：`continuous` 模式只采音不返回结果，各种 workaround 都救不回来。桌面 Chrome 可以，安卓上直接放弃，别浪费时间。
+
+### 方案：MediaRecorder 录音 → 服务端转写
+
+前端用 MediaRecorder 录音，POST 到自己后端，后端转发给 STT 服务（我们用 SiliconFlow 的 SenseVoice，中文效果好且便宜）：
+
+```javascript
+// 前端
+const rec = new MediaRecorder(stream, { mimeType: 'audio/webm' })
+// 停止后把 blob POST /stt
+
+// 后端 routes/stt.js
+router.post('/', upload.single('audio'), async (req, res) => {
+  const form = new FormData()
+  form.append('file', new Blob([req.file.buffer]), 'audio.webm')
+  form.append('model', 'FunAudioLLM/SenseVoiceSmall')
+  const r = await fetch('https://api.siliconflow.cn/v1/audio/transcriptions', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${process.env.SILICONFLOW_KEY}` },
+    body: form,
+  })
+  res.json(await r.json())
+})
+```
+
+语音通话类功能在这套方案下做成 **push-to-talk**（按住说话，松手转写发送）体验最稳；想做全双工实时对话需要流式 STT，成本和复杂度高一个量级。
+
+别忘了反代的 API 路径白名单加 `/stt`。
