@@ -72,7 +72,28 @@ memory.db（数据持久化）
 
 ## 参考与致谢
 
+这套系统不是凭空长出来的，一路受过很多老师的启发。列在这里，既是致谢也是给读者指路：
+
+**记忆架构**
 - **Paramecium**（草履虫记忆架构）by [@Shitsuten](https://github.com/Shitsuten/paramecium)：L0/L1/L2 三层存档架构、FTS5 + 向量混合搜索、prompt cache 分层优化
+
+**共读与批注**
+- [Lumenocturne/coread](https://github.com/Lumenocturne/coread)：人机共读系统
+- [Shitsuten/anno-mcp](https://github.com/Shitsuten/anno-mcp)：批注 MCP
+- [EnhydrInk/tasogare](https://github.com/EnhydrInk/tasogare)：阅读动态工具与阅读时长心跳的思路（12 篇的「阅读动态」一节）
+
+**聊天前端的机制与彩蛋**
+- [ugui3u/chatnest](https://github.com/ugui3u/chatnest)（MIT）：官方风主题 tokens、流式尾随 logo、官端滚动模型、完成彩蛋
+- [29-Cu/pelle-d-umore](https://github.com/29-Cu/pelle-d-umore)（CC-BY）：让 AI 用视觉说话——行内文字特效 + 整屏情绪皮肤
+- [29-Cu/Ruota-della-Fortuna](https://github.com/29-Cu/Ruota-della-Fortuna)：幸运轮盘老虎机
+- [Shitsuten/proactive-nudge](https://github.com/Shitsuten/proactive-nudge)：AI 主动开口的「伪用户消息注入」思路（9 篇的 nudge 一节）
+- [bvsden/chunked-continuity-compaction](https://github.com/bvsden/chunked-continuity-compaction)：长对话分段压缩接续的思路
+- [fishisfish0614/hervoice](https://github.com/fishisfish0614/hervoice)：语音情绪感知的方向启发（我们最终用 STT 模型自带的情绪信号实现零成本版）
+
+**教程与实战经验（推特）**
+- [@qichuanzz](https://x.com/qichuanzz)：手环健康数据管线教程（15 篇的起点）
+- [@Velliotdonuts](https://x.com/Velliotdonuts)：SSE 流式传输教程
+- [@luicethekiwi](https://x.com/luicethekiwi)：prompt 缓存命中实战经验
 
 ---
 
