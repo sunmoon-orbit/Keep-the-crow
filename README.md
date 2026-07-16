@@ -99,6 +99,8 @@ memory.db（数据持久化）
 - [@Velliotdonuts](https://x.com/Velliotdonuts)：SSE 流式传输教程
 - [@luicethekiwi](https://x.com/luicethekiwi)：prompt 缓存命中实战经验
 - 小红书 **5679688734**：Termux MCP 天气教程（20 篇的起点，我们把她的思路移植到了服务端）
+- **hushuo cat**（X）：APK 在线壳路线的指点（19 篇的起点——server.url 走系统网络栈，救活了我们折戟过一次的 APK 计划）
+- 双语通话的界面参考自一张流传的通话 UI 截图，出处佚失——若是你的作品，欢迎联系认领署名
 
 ---
 
