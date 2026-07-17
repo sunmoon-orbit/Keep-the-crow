@@ -56,6 +56,7 @@ memory.db（数据持久化）
 | [18-idle-life.md](18-idle-life.md) | 独处时间：AI 定时醒来自选活动（含推理模型 max_tokens 坑 + 为什么不共享聊天缓存）|
 | [19-apk-shell.md](19-apk-shell.md) | 安卓 APK 在线壳：Capacitor server.url + GitHub Actions 云构建（含签名/前台服务权限/WebView 三缺口）|
 | [20-weather.md](20-weather.md) | 天气感知：双源+缓存+兜底的服务端接口，三端共用（每日首条注入 + 工具 + 进入页天气行）|
+| [21-fcm-push.md](21-fcm-push.md) | FCM 原生推送：零依赖 HTTP v1 发送器 + 双通道广播 + 不用电脑建 Firebase 项目（含九个真实坑）|
 
 ## 前置条件
 
