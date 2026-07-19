@@ -59,7 +59,20 @@ Capacitor 有个很少被提起的配置：`server.url`。设置之后壳里的 
 
 CI runner 每次现场生成 debug keystore，**两次构建的签名不一致**，新包无法覆盖安装，只能卸载重装——WebView 的 localStorage（对话记录、设置）全部跟着丢。
 
-修法：本地 keytool 生成一个 `debug.keystore` **提交进仓库**，CI 里 cp 到 `~/.android/` 复用。之后所有包同签名，永远覆盖安装、数据不丢。（固定签名之前发出去的首个包，下次更新仍要卸载重装一次，提前给用户备份/恢复流程兜底。）
+修法：固定一把 keystore 让 CI 复用。之后所有包同签名，永远覆盖安装、数据不丢。（固定签名之前发出去的首个包，下次更新仍要卸载重装一次，提前给用户备份/恢复流程兜底。）
+
+**2026-07-19 勘误+升级版**：早期版本建议把 keystore 直接提交进仓库——**公开仓库别这么干**（谁都能签出同签名的包，覆盖安装攻击 + API key 签名白名单形同虚设）。正确姿势：
+
+1. 服务器上用 openssl 生成 PKCS12（不用装 JDK/keytool）：
+   ```bash
+   openssl req -x509 -newkey rsa:2048 -keyout k.pem -out c.pem -days 10950 -nodes -subj "/CN=YourApp"
+   openssl pkcs12 -export -inkey k.pem -in c.pem -out release.p12 -name yourapp -passout pass:android
+   ```
+2. `base64 -w0 release.p12` 存进 GitHub Actions secret（手机版 GitHub 找不到入口就用深链 `github.com/<owner>/<repo>/settings/secrets/actions/new`）
+3. workflow 里有 secret 则解码到 /tmp 并写 `$GITHUB_ENV`，gradle `signingConfigs` 读环境变量，**没配 secret 时静默退回随机 debug 签名**（别让 fork 的人构建直接炸）
+4. 顺手把 `versionCode` 绑 `GITHUB_RUN_NUMBER`：每个包自动是「升级」，覆盖安装永远合法
+
+验证签名真的固定了，不用真机：下载 CI 产物 APK，用 python 检查固定证书的 DER 字节是否出现在文件里（`cert_bytes in apk_bytes`）——v1/v2/v3 签名方案通吃，因为签名块里都嵌完整证书。
 
 ## WebView 不是 Chrome：三个原生缺口
 

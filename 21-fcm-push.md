@@ -91,6 +91,48 @@ openssl pkcs12 -in debug.keystore -nokeys -passin pass:android \
 - **给 register 加超时**（我们 20 秒 race）：没装 Google Play 服务、或它被墙时，registration 事件永远不来，没超时就是无限转圈
 - 服务端响应里带 `fcmConfigured` 布尔——前端据此区分「token 上报成功」和「上报了但服务器根本没配密钥」，后者直接 throw，别让用户以为开成功了
 
+## FIS_AUTH_ERROR：一条把我们扒了三层皮的报错（2026-07-19 实录）
+
+上面写完一切照做，用户手机上还是「浏览器不支持推送」→ 修了变成「获取 token 超时」→ 修了变成 `FIS_AUTH_ERROR`。三层坑一层比一层深，每层的教训都值一节。
+
+### 第一层：换壳之后，前端还在检测旧壳
+
+我们从 Capacitor 壳换到 Kotlin WebView 壳，前端 `isNativeApp()` 还只认 `window.Capacitor`——新壳注入的是自己的 JS 桥（如 `window.YanjiNative`），检测不到就走 Web Push 路径，而 WebView 没有 PushManager → 误报「浏览器不支持」。**换壳时全局 grep 一遍所有环境检测点**，让检测函数兼容两代壳。
+
+### 第二层：异步失败被静默吞掉，报错只能靠猜
+
+Kotlin 侧 `FirebaseMessaging.getInstance().token` 只挂了 `addOnSuccessListener`——失败时什么都不发生，token 永远是空，前端只能报个干巴巴的超时。修法是一条**错误直报管道**：
+
+- `addOnFailureListener` 把异常信息写进 SharedPreferences
+- JS 桥暴露 `getFcmError()`，顺手加个 `retryFcmToken()`（启动时那次失败后，点开关能当场重试，不用杀 app）
+- 设置页放一行「诊断」小字：APK 太旧（无桥）/ token 未获取 / Google 注册失败：具体原因 / token 已就位——四种状态一眼分明
+
+原则：**给 Task/Promise 挂回调必须 success + failure 成对，失败信息要能一路传到用户看得见的地方**。没有这条管道，我们永远拿不到下一层的线索。
+
+### 第三层（真凶）：API key 签名白名单 × CI 随机 debug 签名
+
+诊断行终于吐出 `FIS_AUTH_ERROR`。在服务器上直接复现 Firebase Installations 请求：
+
+```bash
+curl -s -X POST "https://firebaseinstallations.googleapis.com/v1/projects/<项目id>/installations" \
+  -H "Content-Type: application/json" -H "x-goog-api-key: <google-services.json里的key>" \
+  -d '{"fid":"cccccccccccccccccccccc","appId":"<appId>","authVersion":"FIS_v2","sdkVersion":"a:18.0.0"}'
+```
+
+返回 `API_KEY_ANDROID_APP_BLOCKED`——Firebase 自动创建的 Android API key 带**应用限制（包名 + 签名 SHA-1 白名单）**，而 19 章说过 CI 每次构建随机生成 debug keystore：指纹次次不同，**永远不在白名单里**。同一个病根，一边炸推送注册，一边炸覆盖安装。
+
+修法（控制台，人肉点，服务账号权限不够改不了 API key）：应用限制改「无」；新版控制台会强制要求选 API 限制，勾三个就够——**Firebase Installations API、FCM Registration API、Firebase Cloud Messaging API**。这比完全不限制更好：钥匙只开推送这三扇门。改完想要更严，先按 19 章固定签名，再把稳定的 SHA-1 加回白名单。
+
+三个好用的技法：
+- **服务器 curl 复现**：客户端一切 Google 侧鉴权错误都能在服务器上重演，拿到的 reason 比手机上的异常字符串详细得多，还不用来回折腾用户
+- **生效探针**：控制台改动最长 5 分钟生效，写个循环每 30 秒打一次上面的 curl，放行瞬间就知道（小心 `pkill -f` 的模式别匹配到探针自己的命令行，会自杀）
+- **自定义 UA 标记**：壳里 `userAgentString += " YourApp/1.0"`，服务器访问日志一眼分辨请求来自壳还是浏览器。「Failed to fetch 但浏览器正常」时先 grep 这个 UA——零请求 = 断在手机侧（十有八九是代理名单），有请求 = 看状态码
+
+### 用户侧补刀
+
+- 卸载重装后**代理名单的勾会掉**；有些代理软件会自动勾新装 app，但**改名单后要重连 VPN 才生效**——刚装完立刻测连接，大概率 Failed to fetch
+- 卸载重装后旧 FCM token 即废，要重新开一次推送开关；服务端记得清死 token
+
 ## 验证阶梯（不用真机就能测到倒数第二级）
 
 1. **假 token 发送**：报 403 → 说明认证链没通（查 IAM）；报 `400 registration token invalid` → **认证/API/权限全通**，只差真 token
@@ -100,7 +142,7 @@ openssl pkcs12 -in debug.keystore -nokeys -passin pass:android \
 
 ## 用户侧三件事（写进使用说明）
 
-- **分应用代理用户**：FCM 走的是 **Google Play 服务**的长连接，不是你的 app——代理名单里勾了你的 app 没用，得勾 Google Play 服务（19 章的教训在推送上再现）
+- **分应用代理用户**：**你的 app 和 Google Play 服务两个都要勾**——拿 token 的 Firebase Installations 请求从 app 自己的进程发，推送长连接走 Google Play 服务进程，缺谁都不通（19 章的教训在推送上再现）
 - 电池优化把 app 设为不限制，否则厂商系统可能延迟到达
 - 旧签名冲突（19 章的坑）在这里再收一次尾：固定 keystore 之前装的包，覆盖安装报冲突，卸载重装一次即愈
 
@@ -113,5 +155,5 @@ openssl pkcs12 -in debug.keystore -nokeys -passin pass:android \
 - [ ] access token 缓存，别每条消息换一次
 - [ ] CI：cp google-services.json + classpath 注入 + grep 验证
 - [ ] 前端 register 加超时，fcmConfigured=false 要 throw
-- [ ] API key 加 Android 应用限制（包名 + SHA1）
+- [ ] API key 限制：⚠️ 签名白名单（包名+SHA1）**必须先固定签名再加**，CI 随机 debug 签名会直接 FIS_AUTH_ERROR；退而求其次用 API 限制勾推送三件套（见 FIS_AUTH_ERROR 一节）
 - [ ] 用户说明：Google Play 服务进代理名单 + 电池白名单
