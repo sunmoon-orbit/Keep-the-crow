@@ -107,11 +107,15 @@ manifest 声明了、前台服务也起了，媒体卡片还是不出来——�
 
 设置里的推送开关在 APK 里会报「浏览器不支持推送通知」——不是坏了，WebView 真不支持 Web Push。真推送要 FCM 原生通道，全过程见 [21-fcm-push.md](21-fcm-push.md)（已上线，含不用电脑创建 Firebase 项目的完整路线）。**这也是为什么依赖 Web Push 的 app 不该套壳**：我们的推送主力（归巢）就决定不搬家，让言叽 APK 先当先锋把 FCM 验证通了再说。
 
+> **2026-07-26 勘误**：上面这个结论的前提（推送能力依赖 Chrome）在 21 章之后就不成立了。FCM 打通之后，主力反而更该搬——留在 PWA 里要一直忍受 WebAPK 重铸（图标和推送归属在 Chrome 和你的 app 之间摇摆）。第二个壳的完整记录见 [23-second-shell.md](23-second-shell.md)，那次改用手写 Kotlin，没再上 Capacitor。
+
 ### 第四缺口（后来发现的）：blob 下载也是死的
 
 「备份全部数据」在 APK 里点了**毫无反应**——不报错、不下载、文件管理器里什么都没有。WebView 没有 DownloadListener，`blob:` + `<a download>` 静默丢弃。而 `<input type="file">` **选文件是好的**：坏的只是下载方向，上传方向没事。
 
 修法：导出类功能检测到原生环境就改 POST 到服务器（我们在 moon-memory 加了 `/backup/yanji` 端点，express.text 大上限 parser，落盘保留最近 10 份）。**别指望在 WebView 里修下载本身**——加 DownloadListener 要动原生层出新包，POST 服务器前端改完 push 即生效，在线壳的热更新优势又一次兑现。
+
+> **2026-07-26 补充**：原生层其实修得了，只是要多绕一道。`DownloadListener` 接得住普通 URL，但接不住 `blob:`（那是 WebView 进程内的对象，DownloadManager 拿不到）——得让 JS 把 blob 读成 base64 再过桥交给 Kotlin 落盘。做法见 [23-second-shell.md](23-second-shell.md)。什么时候该走哪条：**数据在服务器上就 POST 服务器**（前端改完即生效），**数据只在本地**（比如 localStorage 搬家，服务器上根本没有副本）**就必须走原生下载**。
 
 ## 数据迁移
 
@@ -122,7 +126,7 @@ WebView 和 Chrome 的存储完全隔离，PWA 里的数据不会自动出现在
 - [ ] `server.url` 指向线上地址，webDir 只放占位页
 - [ ] appId 与已有 PWA/WebAPK 的身份完全错开，互不干扰
 - [ ] CI 注入权限后 grep 验证，失败即 fail
-- [ ] debug.keystore 固定并提交，保证覆盖安装
+- [ ] 签名 keystore 固定（**存 GitHub Actions secret，公开仓库别提交进去**，见上面 0719 勘误），保证覆盖安装
 - [ ] 分应用代理用户：装完先加代理名单再打开（写进 Release 安装说明）
 - [ ] 带前台服务的插件：核对 targetSdk 34 类型化权限
 - [ ] 提醒用户手动开通知权限

@@ -29,6 +29,16 @@ FCM 需要一个 Firebase 项目。官方路径是网页控制台点点点，但
 - **项目名不收中文**：`projects:create` 的 display_name 至少 4 字符且不认 CJK，「言叽」被 400 拒收，改英文名就过
 - **addFirebase 403**：如果这个 Google 账号从没用过 Firebase，API 无法替人接受服务条款（ToS），会一直 PERMISSION_DENIED。解法：用户在手机上打开 Firebase 控制台走一遍创建流程（等于点了同意），之后 API 重试返回 409 ALREADY_EXISTS = 成功。**403 变 409 是好消息**，别看到报错就回退
 
+**项目建好之后，往里加 app 就不用人了。** 上面这套是一次性的开荒；之后每加一个 Android app（第二个壳、测试包……），Management API 全包了，服务账号就够，不必再去控制台点：
+
+```
+POST https://firebase.googleapis.com/v1beta1/projects/{projectId}/androidApps
+     {"packageName": "cc.example.app", "displayName": "..."}
+GET  https://firebase.googleapis.com/v1beta1/{appName}/config   → configFileContents（base64 的 google-services.json）
+```
+
+注意 scope 要用 `cloud-platform`（不是发推送那个 `firebase.messaging`），下面第二步那段零依赖 JWT 签名代码原样复用即可。细节见 [23-second-shell.md](23-second-shell.md)。
+
 ## 第二步：服务端发送器（零依赖）
 
 不装 firebase-admin（几十 MB 依赖树只为发个通知不值得）。FCM HTTP v1 的认证就是标准 OAuth2 JWT 流，Node 自带的 `node:crypto` 全搞定：
@@ -67,7 +77,9 @@ err.gone = resp.status === 404
 | `google-services.json` | **设计上公开**（API key + App ID，随 APK 分发给所有人）| 提交进仓库，CI 用 |
 | 服务账号密钥 `fcm-sa.json` | **真正的秘密**（private_key 可以以项目身份发任意推送）| 服务器 `secrets/` 目录，chmod 600，永不进 git |
 
-推进仓库后 GitHub secret scanning 会对 google-services.json 里的 API key 报警——**这是误报级别**（谷歌官方文档明说这类 key 可公开），但顺手加固不亏：apikeys API 给 key 加 Android 应用限制（包名 + 签名 SHA1）。取 debug.keystore 的 SHA1 有个小坑：**现代 keytool 生成的是 PKCS12 不是 JKS**，pyjks 之类的库直接读不了，用 openssl：
+推进仓库后 GitHub secret scanning 会对 google-services.json 里的 API key 报警——**这是误报级别**（谷歌官方文档明说这类 key 可公开），alert 里 `Close as → Won't fix` 即可。但**别只拿「按设计如此」结案**：那句话成立的前提是「那把 key 确实什么也打不开」，而这取决于你项目开了哪些 API。花两分钟拿 key 直接打 identitytoolkit / Firestore / Storage 自证一次（做法见 [23-second-shell.md](23-second-shell.md)），并且记住这个结论有保质期——哪天启用了 Auth 或 Firestore 就得重判。
+
+顺手加固不亏：apikeys API 给 key 加 Android 应用限制（包名 + 签名 SHA1）。取 debug.keystore 的 SHA1 有个小坑：**现代 keytool 生成的是 PKCS12 不是 JKS**，pyjks 之类的库直接读不了，用 openssl：
 
 ```bash
 openssl pkcs12 -in debug.keystore -nokeys -passin pass:android \

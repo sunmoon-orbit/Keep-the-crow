@@ -58,6 +58,7 @@ memory.db（数据持久化）
 | [20-weather.md](20-weather.md) | 天气感知：双源+缓存+兜底的服务端接口，三端共用（每日首条注入 + 工具 + 进入页天气行）|
 | [21-fcm-push.md](21-fcm-push.md) | FCM 原生推送：零依赖 HTTP v1 发送器 + 双通道广播 + 不用电脑建 Firebase 项目（含九个真实坑）|
 | [22-native-widgets.md](22-native-widgets.md) | 原生桌面小组件：RemoteViews 白名单陷阱 + JS→Kotlin PRNG 移植 + 情绪桥接 + 主题跟随（含 FOUC 修法）|
+| [23-second-shell.md](23-second-shell.md) | 第二个原生壳：一把 keystore 签两个 app + Management API 免人工建 Firebase app + localStorage 搬家 + 应用内自更新（含密钥误报自证、缓存别缓存失败、静默 catch 藏三个月）|
 
 ## 前置条件
 
