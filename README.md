@@ -65,7 +65,7 @@ memory.db（数据持久化）
 | [07-yanji.md](07-yanji.md) | 言叽 AI 聊天界面（多模型/工具调用/记忆注入/情绪系统/来电与语音留言/双语通话/主题调优）|
 | [08-electron.md](08-electron.md) | Electron 桌面版打包与分发 |
 | [09-push-dream.md](09-push-dream.md) | 主动推送语料 & 做梦系统 & nudge 主动消息 |
-| [10-server-migration.md](10-server-migration.md) | 换服务器迁移清单 & 备份体系 & 日常运维（VACUUM/监控）|
+| [10-server-migration.md](10-server-migration.md) | 换服务器迁移清单 & 备份体系（含还原演练）& 日常运维（VACUUM/监控）& 告警判据设计 |
 | [11-prompt-caching.md](11-prompt-caching.md) | Prompt Caching 实战：长对话省钱且不失忆 |
 | [12-shared-reading.md](12-shared-reading.md) | 共读书架：划线批注 + 共读旧对话 + 阅读动态 + 公版书上架流水线 |
 | [13-security.md](13-security.md) | 安全加固：桥接服务的五个真实漏洞与修法 |
@@ -79,6 +79,7 @@ memory.db（数据持久化）
 | [21-fcm-push.md](21-fcm-push.md) | FCM 原生推送：零依赖 HTTP v1 发送器 + 双通道广播 + 不用电脑建 Firebase 项目（含九个真实坑）|
 | [22-native-widgets.md](22-native-widgets.md) | 原生桌面小组件：RemoteViews 白名单陷阱 + JS→Kotlin PRNG 移植 + 情绪桥接 + 主题跟随（含 FOUC 修法）|
 | [23-second-shell.md](23-second-shell.md) | 第二个原生壳：一把 keystore 签两个 app + Management API 免人工建 Firebase app + localStorage 搬家 + 应用内自更新（含密钥误报自证、缓存别缓存失败、静默 catch 藏三个月）|
+| [24-tarot.md](24-tarot.md) | 把独立小工具搬进主程序：生成物 + `--check` 治数据漂移 + 历史存引用不存副本 + 给模型的暗道 + 横滑是设计竖滑是 bug |
 
 ## 前置条件
 
