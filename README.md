@@ -102,6 +102,9 @@ memory.db（数据持久化）
 
 这套系统不是凭空长出来的，一路受过很多老师的启发。列在这里，既是致谢也是给读者指路：
 
+**维护协作**
+- **ChatGPT Codex（OpenAI）**：协助仓库维护、技术审阅、文档整理，以及发布前的隐私与密钥检查。部分提交会以 `Codex <codex@openai.com>` 记录作者；由于该邮箱没有对应的公开 GitHub 账号，Codex 可能不会显示在 GitHub 的贡献者头像列表中。
+
 **记忆架构**
 - **Paramecium**（草履虫记忆架构）by [@Shitsuten](https://github.com/Shitsuten/paramecium)：L0/L1/L2 三层存档架构、FTS5 + 向量混合搜索、prompt cache 分层优化
 
