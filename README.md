@@ -80,6 +80,7 @@ memory.db（数据持久化）
 | [22-native-widgets.md](22-native-widgets.md) | 原生桌面小组件：RemoteViews 白名单陷阱 + JS→Kotlin PRNG 移植 + 情绪桥接 + 主题跟随（含 FOUC 修法）|
 | [23-second-shell.md](23-second-shell.md) | 第二个原生壳：一把 keystore 签两个 app + Management API 免人工建 Firebase app + localStorage 搬家 + 应用内自更新（含密钥误报自证、缓存别缓存失败、静默 catch 藏三个月）|
 | [24-tarot.md](24-tarot.md) | 把独立小工具搬进主程序：生成物 + `--check` 治数据漂移 + 历史存引用不存副本 + 给模型的暗道 + 横滑是设计竖滑是 bug |
+| [25-recent-hardening.md](25-recent-hardening.md) | 最近一轮稳定性加固：收费重试确认、流式诊断、逻辑轮数、草稿隔离、MCP 安全边界、原生更新与主题收口 |
 
 ## 前置条件
 
@@ -110,12 +111,12 @@ memory.db（数据持久化）
 - [EnhydrInk/tasogare](https://github.com/EnhydrInk/tasogare)：阅读动态工具与阅读时长心跳的思路（12 篇的「阅读动态」一节）
 
 **聊天前端的机制与彩蛋**
-- [ugui3u/chatnest](https://github.com/ugui3u/chatnest)（MIT）：官方风主题 tokens、流式尾随 logo、官端滚动模型、完成彩蛋
-- [29-Cu/pelle-d-umore](https://github.com/29-Cu/pelle-d-umore)（CC-BY）：让 AI 用视觉说话——行内文字特效 + 整屏情绪皮肤
-- [29-Cu/Ruota-della-Fortuna](https://github.com/29-Cu/Ruota-della-Fortuna)：幸运轮盘老虎机
+- [ugui3u/chatnest](https://github.com/ugui3u/chatnest)（非商业使用许可）：官方风主题 tokens、流式尾随 logo、官端滚动模型、完成彩蛋
+- [29-Cu/pelle-d-umore](https://github.com/29-Cu/pelle-d-umore)（CC BY 4.0）：让 AI 用视觉说话——行内文字特效 + 整屏情绪皮肤
+- [29-Cu/Ruota-della-Fortuna](https://github.com/29-Cu/Ruota-della-Fortuna)（MIT）：幸运轮盘老虎机
 - [Shitsuten/proactive-nudge](https://github.com/Shitsuten/proactive-nudge)：AI 主动开口的「伪用户消息注入」思路（9 篇的 nudge 一节）
 - [bvsden/chunked-continuity-compaction](https://github.com/bvsden/chunked-continuity-compaction)：长对话分段压缩接续的思路
-- [fishisfish0614/hervoice](https://github.com/fishisfish0614/hervoice)：语音情绪感知的方向启发（我们最终用 STT 模型自带的情绪信号实现零成本版）
+- [fishisfish0614/hervoice](https://github.com/fishisfish0614/hervoice)（MIT）：语音情绪感知的方向启发（我们最终用 STT 模型自带的情绪信号实现零成本版）
 - [Cheiineeey/callhome](https://github.com/Cheiineeey/callhome)（MIT）：AI 主动来电的 dial 标记 + 未接转语音留言的设计（07 篇的「来电与语音留言」一节）
 
 **教程与实战经验（推特/小红书）**
@@ -132,4 +133,6 @@ memory.db（数据持久化）
 
 ## 许可
 
-教程正文 [CC BY-NC 4.0](LICENSE.md)：署名可自由转载改编，禁止商用（卖课/出书盈利）。代码片段不受限，随便抄进你自己的项目——授人以渔，渔具管够。
+教程正文采用 [CC BY-NC 4.0](LICENSE.md)，原创代码示例采用 [MIT License](LICENSE.md)。引用项目与上游授权边界见 [第三方来源说明](THIRD_PARTY_NOTICES.md)。
+
+准备补充教程时，请先过一遍 [参与更新与隐私检查](CONTRIBUTING.md)。
