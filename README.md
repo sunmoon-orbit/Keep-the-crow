@@ -81,6 +81,7 @@ memory.db（数据持久化）
 | [23-second-shell.md](23-second-shell.md) | 第二个原生壳：一把 keystore 签两个 app + Management API 免人工建 Firebase app + localStorage 搬家 + 应用内自更新（含密钥误报自证、缓存别缓存失败、静默 catch 藏三个月）|
 | [24-tarot.md](24-tarot.md) | 把独立小工具搬进主程序：生成物 + `--check` 治数据漂移 + 历史存引用不存副本 + 给模型的暗道 + 横滑是设计竖滑是 bug |
 | [25-recent-hardening.md](25-recent-hardening.md) | 最近一轮稳定性加固：收费重试确认、流式诊断、逻辑轮数、草稿隔离、MCP 安全边界、原生更新与主题收口 |
+| [26-reliable-small-vps-workflow.md](26-reliable-small-vps-workflow.md) | 小服务器可靠协作与上线：worktree 隔离、SQLite 一致性备份、云构建、生成物冲突、可恢复删除与主动联系联调 |
 
 ## 前置条件
 
