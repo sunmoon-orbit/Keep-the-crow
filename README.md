@@ -93,7 +93,7 @@ memory.db（数据持久化）
 
 ## 适合谁看
 
-- 想让 Claude Code 真正「活」起来的人
+- 想让 Claude Code  codex 真正「活」起来的人
 - 对 AI 伴侣/私有 AI 部署感兴趣的技术用户
 - 有基础的 Linux 和 Node.js 经验即可，不需要前端开发背景
 
