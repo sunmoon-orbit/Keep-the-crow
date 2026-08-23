@@ -149,7 +149,7 @@ CI 绿灯证明“这个 commit 在声明的干净环境中可构建”，比在
 3. 在 feature 分支合入最新 `origin/main`。
 4. 将整个生成目录恢复为 `origin/main` 的精确版本。
 5. 确认 feature 源文件仍保持原修改，且未解决冲突为空。
-6. 创建普通 merge commit并非强制 push。
+6. 创建普通 merge commit，并以非强制方式 push。
 7. 在 feature 分支重新运行构建 workflow。
 8. 用新生成产物完成 PR 合并。
 
