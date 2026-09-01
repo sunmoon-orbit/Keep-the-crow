@@ -82,6 +82,7 @@ memory.db（数据持久化）
 | [24-tarot.md](24-tarot.md) | 把独立小工具搬进主程序：生成物 + `--check` 治数据漂移 + 历史存引用不存副本 + 给模型的暗道 + 横滑是设计竖滑是 bug |
 | [25-recent-hardening.md](25-recent-hardening.md) | 最近一轮稳定性加固：收费重试确认、流式诊断、逻辑轮数、草稿隔离、MCP 安全边界、原生更新与主题收口 |
 | [26-reliable-small-vps-workflow.md](26-reliable-small-vps-workflow.md) | 小服务器可靠协作与上线：worktree 隔离、SQLite 一致性备份、云构建、生成物冲突、可恢复删除与主动联系联调 |
+| [27-chatgpt-mcp.md](27-chatgpt-mcp.md) | 自建 MCP 接入 ChatGPT：开发者模式、元数据刷新、新窗口加载、PM2 后台与端到端验收 |
 
 ## 前置条件
 
