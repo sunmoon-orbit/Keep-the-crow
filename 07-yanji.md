@@ -418,6 +418,23 @@ Extended thinking 模式强制 `temperature = 1`（Anthropic 要求）。
 
 Agent 的语音消息也复用 Murmur 的播放能力：点击语音条可以播放或暂停，加载时有明确状态，失败时显示错误，音频就绪后显示时长。这里共用的是 `useMessageSpeech`、`speech-player` 和 `voice-bar`，所以两边的播放行为应保持一致。
 
+
+## 渡口模型切换：以 App Server 确认为准
+
+渡口的 `/model` 是本地界面命令，不是发给模型的问题。前端先拦截，桥接层再兜底；执行前后不应新增一次 `turn/start`。否则模型可能用自然语言自述一个名称，但这不代表 App Server 真的切换了模型。
+
+模型与推理强度要按当前 App Server 暴露的协议处理：
+
+- 用 `model/list` 动态读取可用模型、`supportedReasoningEfforts` 和默认档位，不把版本相关名单硬编码进界面。
+- 稳定连接不要调用只存在于 experimental schema 的 `thread/settings/update`；是否可用应以当前 CLI 生成的 schema 与官方 App Server 文档为准。
+- 用户选择后先保存为 pending selection，并显示“待下一轮应用”；下一条消息通过 `turn/start { model, effort }` 应用到当前轮及后续轮次。
+- 只有收到 `thread/settings/updated`，或经 `thread/read` 读回确认后，顶部才能更新 confirmed model。失败时保留上一次已确认值，不能清空成“模型未知”。
+- confirmed model 属于 per-thread 状态，应能跨后续轮次、页面刷新与 WebSocket 重连恢复；它不修改 Codex CLI 的全局默认模型。
+- `thread/resume` 可以恢复线程，但不能被当作模型切换成功的证明；协议未提供的字段也不能靠前端自行猜测。
+
+这套区分的关键是：**用户刚选中的值只是意图，App Server 读回的值才是事实。** CLI 升级后如果模型切换再次异常，先重新生成 stable / experimental schema 对照，而不是沿用旧版本 RPC 经验。
+
+
 ## “+”工具入口与页面能力边界
 
 聊天输入框左侧的“+”是统一工具入口。原来常驻在输入区周围的工具栏、附件和表情入口都收进这张卡片，减少小屏拥挤。再次点击“+”或点击卡片外部即可关闭。图标沿用项目已有的 SVG / icon，不混用 emoji。
