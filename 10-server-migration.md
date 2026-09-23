@@ -242,6 +242,32 @@ VAPID 密钥对（公钥+私钥）必须与旧服务器完全相同，否则：
 - 推到独立的 `data` 分支，**每次 amend 同一个提交再 force push**——历史里永远只有一份，仓库不膨胀
 - 恢复：`cat part-* | gunzip > memory.db`
 
+### 备份脚本不要在开发工作树里提交
+
+早期脚本的高危形态是：在生产代码目录里生成分块，然后 `git add . && git commit && git push --force`。只要维护者正好有未提交修改，备份任务就可能把代码、临时文件甚至凭据一起推走。
+
+更稳的两条路：
+
+- **专用 worktree**：备份分支始终在单独目录，脚本只能看到备份文件；
+- **临时裸仓 + 明确 pathspec**：在 `mktemp -d` 下生成快照，只添加列举过的分块和 manifest。
+
+即使 data 分支采用「每次覆盖上一份」策略，也优先 `--force-with-lease`，不用裸 `--force`。lease 会在远端已被另一个备份任务推进时拒绝覆盖，避免两台机器的备份互相吃掉。
+
+备份任务提交前做三个断言：
+
+```bash
+# 只允许预期的备份路径出现
+git diff --cached --name-only
+
+# 凭据哨兵零命中（排除可能讨论这些字样的文档）
+git grep -nE 'BEGIN (RSA |EC |)PRIVATE KEY|Authorization: Bearer' -- ':!*.md' ':!docs/**'
+
+# 快照 manifest 里记录原文件大小、时间和 sha256
+sha256sum memory.db.gz.part-*
+```
+
+不要把「工作树当时是干净的」当成安全保证。定时任务跑的那一秒，你并不在旁边看着。
+
 ### 主仓历史膨胀
 
 带产物提交的主仓库长到 1GB+ 时，`git checkout --orphan` + squash 成单提交重推，历史瘦身。（教程/代码仓库不用这么激进，带大二进制的仓库才需要。）

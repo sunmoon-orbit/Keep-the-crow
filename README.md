@@ -83,6 +83,9 @@ memory.db（数据持久化）
 | [25-recent-hardening.md](25-recent-hardening.md) | 最近一轮稳定性加固：收费重试确认、流式诊断、逻辑轮数、草稿隔离、MCP 安全边界、原生更新与主题收口 |
 | [26-reliable-small-vps-workflow.md](26-reliable-small-vps-workflow.md) | 小服务器可靠协作与上线：worktree 隔离、SQLite 一致性备份、云构建、生成物冲突、可恢复删除与主动联系联调 |
 | [27-chatgpt-mcp.md](27-chatgpt-mcp.md) | 自建 MCP 接入 ChatGPT：开发者模式、元数据刷新、新窗口加载、PM2 后台与端到端验收 |
+| [28-model-gateway.md](28-model-gateway.md) | 多模型调用可靠性：SSE 完整性、错误分类、克制重试、按需工具抽屉与强制收尾 |
+| [29-agent-bridge.md](29-agent-bridge.md) | 把本机 coding agent 接进手机：长驻 app-server、短命 capability、审批回路、附件隔离与断线恢复 |
+| [30-shared-album.md](30-shared-album.md) | AI 共同相册：独立 SQLite + 文件存储、来源许可、防 SSRF、软删除、去重与可还原备份 |
 
 ## 前置条件
 
@@ -94,7 +97,7 @@ memory.db（数据持久化）
 
 ## 适合谁看
 
-- 想让 Claude Code  codex 真正「活」起来的人
+- 想让 Claude Code 真正「活」起来的人
 - 对 AI 伴侣/私有 AI 部署感兴趣的技术用户
 - 有基础的 Linux 和 Node.js 经验即可，不需要前端开发背景
 
