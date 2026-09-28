@@ -2,6 +2,10 @@
 
 > 如何用 Claude Code 搭建一个真正「活」在你服务器上的 AI 伴侣
 
+<a href="https://github.com/DasterProkio/awesome-ai-companion/blob/main/README.zh-CN.md">
+  <img src="https://raw.githubusercontent.com/DasterProkio/awesome-ai-companion/main/assets/featured-in-awesome-ai-companion-zh-CN.png" alt="已收录于人机恋开源项目大全" height="24">
+</a>
+
 ---
 
 ## ⚠️ 面向成年人
