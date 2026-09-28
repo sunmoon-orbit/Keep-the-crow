@@ -86,6 +86,9 @@ memory.db（数据持久化）
 | [28-model-gateway.md](28-model-gateway.md) | 多模型调用可靠性：SSE 完整性、错误分类、克制重试、按需工具抽屉与强制收尾 |
 | [29-agent-bridge.md](29-agent-bridge.md) | 把本机 coding agent 接进手机：长驻 app-server、短命 capability、审批回路、附件隔离与断线恢复 |
 | [30-shared-album.md](30-shared-album.md) | AI 共同相册：独立 SQLite + 文件存储、来源许可、防 SSRF、软删除、去重与可还原备份 |
+| [31-subscription-voice-and-wechat.md](31-subscription-voice-and-wechat.md) | 让订阅替你打电话：归巢语音（录音→服务端转写→CC 回复→自动朗读）、语音条、打断、双语、tmux 吞消息两坑；cc-connect 接个人微信（白名单、发送额度、审核分工） |
+| [32-silent-failures-and-recovery.md](32-silent-failures-and-recovery.md) | 悄悄失败的三个月：回复没存档的成因、从会话 jsonl 安全捞回两千多条、改默认值＋重试＋每日对账 |
+| [33-fogged-glass-splash.md](33-fogged-glass-splash.md) | 开屏：起雾玻璃＋水波＋可擦除，三层 canvas/SVG、回雾、动画分层，真实时间测性能 |
 
 ## 前置条件
 
