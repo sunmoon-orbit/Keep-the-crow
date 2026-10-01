@@ -78,7 +78,7 @@ messages.slice(-50)  // ← 千万别这么写
 
 每来一条新消息，窗口就往前滑一格，**开头那条消息变了** → 前缀匹配失败 → 全量重写。这个写法让缓存 100% 失效，而且每轮都付写缓存的钱。
 
-正确做法是**锚定切点**：切点按步长对齐，只在跨过边界时才移动。
+正确做法是**锚定切点**：切点按步长对齐，只在跨过边界时才移动。更长期的对话适合再往前走一步：把锚定切点变成**固定分界线的翻页**。
 
 ```javascript
 // 量化切点：窗口内多轮对话共享同一个开头，前缀保持稳定
@@ -92,6 +92,52 @@ return messages.slice(cut)
 代价是窗口比 max 略小，收益是切点在多轮内不动，缓存持续命中。切点移动的那一轮会付一次全量写——这是计划内的，比每轮都写便宜一个数量级。
 
 真实实现中应先把原始消息归组为逻辑轮，再对“轮数组”计算锚定切点，最后展开。缓存断点也只能落在完整轮的末尾。
+
+### 更稳的长期方案：整页翻过去
+
+达到阈值时，把旧页压缩成一份有上限的“接续笔记”，保留最近若干个完整逻辑轮，并把新分界线一次性固定下来。下一次达到阈值之前：
+
+- 接续笔记不变；
+- 分界线后的开头不变；
+- 新消息只往尾部追加。
+
+这比“每轮保留最近 N 轮”更适合 prompt cache，因为两次翻页之间的前缀始终稳定：
+
+```javascript
+function pagePlan(messages, compactedThrough, options) {
+  const start = compactedThrough
+    ? messages.findIndex(message => message.id === compactedThrough) + 1
+    : 0
+  const live = messages.slice(start)
+  const userStarts = []
+  for (let i = 0; i < live.length; i++) {
+    if (live[i].role === 'user' && live[i - 1]?.role !== 'user') userStarts.push(i)
+  }
+
+  const due = userStarts.length >= options.maxRounds
+    || estimateTokens(live) >= options.maxTokens
+  const keepFrom = userStarts.length > options.keepRounds
+    ? userStarts[userStarts.length - options.keepRounds]
+    : 0
+
+  return { due, start, end: start + keepFrom }
+}
+```
+
+计费方式也要进入阈值策略：
+
+- **按 token 计费**：更早翻页，减少每轮重复输入；
+- **按次计费**：适当放宽，避免为压缩额外多调一次模型。
+
+具体数字不要写死在全局。每个 provider/连接单独保存计费模式与阈值，并准备一个较大的全局安全上限防止异常请求撑爆。
+
+压缩失败时必须回退原文，不能先移动游标再发现摘要为空。游标和接续笔记要作为一次原子提交；用户编辑分界线之前的旧消息时，两者一起失效并重建。
+
+### L0 是压缩的可查回退，不是每次都拉整窗
+
+接续笔记有损是可接受的，前提是完整原文已进入 L0，且用户能搜索、预览、再把某一条带回当前对话。
+
+搜索结果只显示命中摘要往往不够；预览卡应显示窗口名、日期和命中前后各 3–5 条。但不要为了这几条把整个历史窗口下载到手机：服务端提供“按稳定 message id 取前后 N 条”的邻域接口，同时校验命中消息确实属于该窗口。找不到时返回 404，不要默默退回窗口开头，否则用户会在一段无关上下文里猜错。
 
 ---
 

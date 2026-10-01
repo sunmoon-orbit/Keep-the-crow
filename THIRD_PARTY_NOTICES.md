@@ -24,6 +24,8 @@
 | [bvsden/chunked-continuity-compaction](https://github.com/bvsden/chunked-continuity-compaction) | 长对话分段压缩参考 | MIT |
 | [fishisfish0614/hervoice](https://github.com/fishisfish0614/hervoice) | 语音情绪感知方向参考 | MIT（仓库 `LICENSE`） |
 | [Cheiineeey/callhome](https://github.com/Cheiineeey/callhome) | 主动来电与未接留言机制参考 | MIT |
+| [Anko3o/cute-chat-stickers](https://github.com/Anko3o/cute-chat-stickers) | 贴图与颜文字面板的交互启发；未复制代码或素材 | CC BY-NC-SA 4.0（仓库 README） |
+| [lupipi222-lang/wake-lottery](https://github.com/lupipi222-lang/wake-lottery) | 主动开口时抽取轻量互动任务的机制参考 | MIT（仓库 `LICENSE`） |
 
 社交平台帖子、截图和口述经验只作为路线提示或界面参考，不在本仓库中重新授权。更完整的署名见 [README.md](README.md#参考与致谢)。
 

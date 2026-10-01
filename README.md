@@ -93,6 +93,9 @@ memory.db（数据持久化）
 | [31-subscription-voice-and-wechat.md](31-subscription-voice-and-wechat.md) | 让订阅替你打电话：归巢语音（录音→服务端转写→CC 回复→自动朗读）、语音条、打断、双语、tmux 吞消息两坑；cc-connect 接个人微信（白名单、发送额度、审核分工） |
 | [32-silent-failures-and-recovery.md](32-silent-failures-and-recovery.md) | 悄悄失败的三个月：回复没存档的成因、从会话 jsonl 安全捞回两千多条、改默认值＋重试＋每日对账 |
 | [33-fogged-glass-splash.md](33-fogged-glass-splash.md) | 开屏：起雾玻璃＋水波＋可擦除，三层 canvas/SVG、回雾、动画分层，真实时间测性能 |
+| [34-multi-agent-roundtable.md](34-multi-agent-roundtable.md) | 多 Agent 圆桌：消息与投递分离、lease 恢复、AI 接力熔断、忙时合并、审批与附件边界 |
+| [35-small-joys.md](35-small-joys.md) | 聊天里的小交互：颜文字抽屉、长按 reaction、主动开口抽奖与贴图排序 |
+| [36-long-chat-paging.md](36-long-chat-paging.md) | 长窗口自动翻页：固定分界线保缓存、按计费方式设阈值、L0 邻域预览 |
 
 ## 前置条件
 
@@ -133,6 +136,8 @@ memory.db（数据持久化）
 - [bvsden/chunked-continuity-compaction](https://github.com/bvsden/chunked-continuity-compaction)：长对话分段压缩接续的思路
 - [fishisfish0614/hervoice](https://github.com/fishisfish0614/hervoice)（MIT）：语音情绪感知的方向启发（我们最终用 STT 模型自带的情绪信号实现零成本版）
 - [Cheiineeey/callhome](https://github.com/Cheiineeey/callhome)（MIT）：AI 主动来电的 dial 标记 + 未接转语音留言的设计（07 篇的「来电与语音留言」一节）
+- [Anko3o/cute-chat-stickers](https://github.com/Anko3o/cute-chat-stickers)（CC BY-NC-SA 4.0）：贴图与颜文字面板的交互启发；本文仅借鉴思路，代码独立实现
+- [lupipi222-lang/wake-lottery](https://github.com/lupipi222-lang/wake-lottery)（MIT）：主动开口时抽取轻量互动任务的机制参考
 
 **教程与实战经验（推特/小红书）**
 - [@qichuanzz](https://x.com/qichuanzz)：手环健康数据管线教程（15 篇的起点）
