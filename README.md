@@ -58,8 +58,11 @@ memory.db（数据持久化）
 
 ## 目录
 
+> **动手之前，先扫一眼 [00 · 避坑索引](00-pitfalls.md)**：几十个真实踩过的坑，按「你会看到的症状 → 原因 → 去哪章看」排好了。
+
 | 文件 | 内容 |
 |------|------|
+| [00-pitfalls.md](00-pitfalls.md) | **避坑索引**：按搭建、桥接、手机前端、推送、记忆、省钱分组，一坑一行 |
 | [01-architecture.md](01-architecture.md) | 整体架构与组件关系 |
 | [02-remote-control.md](02-remote-control.md) | Claude Code Remote Control 配置 |
 | [03-raven-bridge.md](03-raven-bridge.md) | raven-bridge 聊天桥接服务器 |
