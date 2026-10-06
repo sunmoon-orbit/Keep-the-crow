@@ -227,6 +227,65 @@ try {
 
 如果你给 AI 发明过任何方括号标签（`[glow]` 行内特效、`[sticker:x]` 贴图、`(breath)` 语气……），**每发明一个，就要同步加进 TTS 的文本清洗**，否则朗读会一本正经地把「glow」当英文念出来。清洗函数要挂在所有走向 TTS 的路径上（消息朗读按钮 + 语音通话），只挂一处必漏。
 
+## 表演标签：念不出来、但听得见的方括号
+
+有的合成模型会把方括号里的英文短语当成**表演指示**：不念出来，而是照着演。写 `[whispers]` 它就压低声音，写 `[exhales]` 它就呼一口气，写一整句带画面的短语它也接得住。ElevenLabs 的 v4 是这样；我们的备用供应商不认这一套，只认它自己的几个圆括号标签。
+
+所以清洗要分两路，和上一节的「方括号必须进清洗」是同一件事的两面：
+
+- **认标签的那家**：放行「全小写英文短语」，其余方括号照剥。我们的判据是只许字母、空格、逗号、连字符、撇号，最多 160 个字符、24 个词。数字和冒号不许出现，这样 `[sticker:x]`、`[Link 2]` 这类自家标记自然被挡在外面。
+- **不认的那家**：英文标签一律剥掉。宁可少一声音效，也别让它把 `whispers` 当单词念出来。
+
+### 坑：标签比台词长，那句台词会被说两遍
+
+症状是语音里某一句话重复了一遍，像是程序把同一段送了两次。查日志只送了一次，重复是合成模型自己念出来的。
+
+规律来自 [离](https://github.com/sanqianzilanyue) 的实测（见文末致谢），不是我们量出来的：**标签越长、它后面那句台词越短，越容易重复**。十二个词的标签配四个字的台词，四次里四次重复；四个词以内的标签，怎么配都没事。可以这样理解：标签占的戏太多，模型演完发现话已经说完了，只好再说一遍把戏填满。原因是猜的，规律是量出来的。
+
+两道防线：
+
+1. **写的时候**：两三个字的短句，只配一两个词的标签。这条写进给模型的提示里。
+2. **程序兜底**：送去合成前，按每个标签后面那句台词的长短自动裁标签。只动标签，台词一个字不碰。
+
+```javascript
+// 一个标签管到下一个标签之前（或这一行结束）的那段话
+function lineAmount(line) {
+  const cjk = (line.match(/[\u3400-\u9fff\u3040-\u30ff]/g) || []).length
+  const words = (line.match(/[A-Za-z][A-Za-z'’-]*/g) || []).length
+  return cjk + Math.round(words * 1.5)   // 一个英文词大约顶一个半汉字的时长
+}
+
+const DANGLERS = new Set('a an the and or to at in of on by with into against from then your my her his'.split(' '))
+
+function trimTagToLine(tag, amount) {
+  const count = (parts) => parts.reduce((n, p) => n + p.split(/\s+/).filter(Boolean).length, 0)
+  const parts = tag.split(/[,，]/).map((p) => p.trim()).filter(Boolean)
+  // 四个词以内不用管；后面没有话的是一声纯音效，没有台词可重复，也不裁
+  if (count(parts) <= 4 || amount <= 0) return parts.join(', ')
+  const allow = Math.max(4, Math.min(12, Math.floor(amount * 0.55)))
+  while (parts.length > 1 && count(parts) > allow) parts.pop()      // 先丢逗号后面的小节
+  if (count(parts) <= allow) return parts.join(', ')
+  const kept = parts[0].split(/\s+/).filter(Boolean).slice(0, allow) // 还长就截词
+  while (kept.length > 1 && DANGLERS.has(kept[kept.length - 1])) kept.pop()  // 别停在介词上
+  return kept.join(' ')
+}
+
+const trimTags = (text) =>
+  text.replace(/\[([^\]\n]{1,170})\]([^\[\n]*)/g, (m, tag, line) => `[${trimTagToLine(tag, lineAmount(line))}]${line}`)
+```
+
+系数 0.55 和「最少留 4 个、最多 12 个」沿用的是原作者的数；「英文词折一个半汉字」「截完不停在介词上」「纯音效不裁」是我们按自己的中英混排情况加的，没有做过同样规模的实测。
+
+### 写标签的几条经验
+
+同样出自那两篇实测，我们照着改了写法：
+
+- **呼吸要写「忍着的」，别写「演出来的」。** `slow`、`low`、`held`、`through the nose`、`let out slow` 这一路听着像真的；`panting`、`gasping`、`moaning`、`shaky`、`trembling` 一写它就开始演。发狠的词（`gritted`、`harsh`）也会把语气带偏。
+- **低低的「嗯」「哼」直接写成字**，不用标签，模型念得很好。
+- **话中间可以插小标签**：`[exhales]`、`[sighs]`、`[short pause]`。一段一两处，放在换语言、动作落下去的那一下；插密了反而不自然，其余的停顿用省略号。
+- **音调一截一截地跳，病在段与段的接缝。** 每新起一段，模型都从高处重新起头。连着的几句并成一段送去念，别一个标签切一块。这一条我们还没做，记在这里。
+- **想让它不重样，别发词表。** 提示里点了哪个词，模型就认准哪个词。把它上一轮真说过的点出来，请它换一个。
+
 ## 限速建议
 
 TTS 调用有费用，建议在后端加简单限速，防止被滥用：

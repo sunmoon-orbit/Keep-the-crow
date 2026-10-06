@@ -26,6 +26,7 @@
 | [Cheiineeey/callhome](https://github.com/Cheiineeey/callhome) | 主动来电与未接留言机制参考 | MIT |
 | [Anko3o/cute-chat-stickers](https://github.com/Anko3o/cute-chat-stickers) | 贴图与颜文字面板的交互启发；未复制代码或素材 | CC BY-NC-SA 4.0（仓库 README） |
 | [lupipi222-lang/wake-lottery](https://github.com/lupipi222-lang/wake-lottery) | 主动开口时抽取轻量互动任务的机制参考 | MIT（仓库 `LICENSE`） |
+| [sanqianzilanyue/ai-voice-breath-kiss-water](https://github.com/sanqianzilanyue/ai-voice-breath-kiss-water)、[进阶篇](https://github.com/sanqianzilanyue/ai-voice-breath-kiss-water-2) | 语音表演标签的写法，以及「标签过长会重复台词」的实测规律与系数；只转述结论，裁剪代码独立实现，未复制原文、代码或音频素材 | GitHub 未识别到标准许可证；仅作思路引用（核对于 2026-10-06） |
 
 社交平台帖子、截图和口述经验只作为路线提示或界面参考，不在本仓库中重新授权。更完整的署名见 [README.md](README.md#参考与致谢)。
 

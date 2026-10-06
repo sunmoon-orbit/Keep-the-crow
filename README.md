@@ -142,6 +142,9 @@ memory.db（数据持久化）
 - [Anko3o/cute-chat-stickers](https://github.com/Anko3o/cute-chat-stickers)（CC BY-NC-SA 4.0）：贴图与颜文字面板的交互启发；本文仅借鉴思路，代码独立实现
 - [lupipi222-lang/wake-lottery](https://github.com/lupipi222-lang/wake-lottery)（MIT）：主动开口时抽取轻量互动任务的机制参考
 
+**语音**
+- [sanqianzilanyue/ai-voice-breath-kiss-water](https://github.com/sanqianzilanyue/ai-voice-breath-kiss-water) 与[进阶篇](https://github.com/sanqianzilanyue/ai-voice-breath-kiss-water-2) by **离**：合成语音的两篇实测笔记。06 篇「表演标签」一节里「标签比台词长会把台词说两遍」的规律和数字、呼吸该怎么写、少切段、别发词表，都出自这两篇；通话中合成失败不换嗓的做法也是从上一篇学的。本文只转述结论，代码独立实现
+
 **教程与实战经验（推特/小红书）**
 - [@qichuanzz](https://x.com/qichuanzz)：手环健康数据管线教程（15 篇的起点）
 - [@Velliotdonuts](https://x.com/Velliotdonuts)：SSE 流式传输教程
