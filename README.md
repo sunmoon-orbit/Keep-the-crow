@@ -99,6 +99,9 @@ memory.db（数据持久化）
 | [34-multi-agent-roundtable.md](34-multi-agent-roundtable.md) | 多 Agent 圆桌：消息与投递分离、lease 恢复、AI 接力熔断、忙时合并、审批与附件边界 |
 | [35-small-joys.md](35-small-joys.md) | 聊天里的小交互：颜文字抽屉、长按 reaction、主动开口抽奖与贴图排序 |
 | [36-long-chat-paging.md](36-long-chat-paging.md) | 长窗口自动翻页：固定分界线保缓存、按计费方式设阈值、L0 邻域预览 |
+| [37-voice-notes.md](37-voice-notes.md) | 用户发语音条：按住/轻点两种手势、预览、SenseVoice 转写带情绪和声音事件、一个把用户锁在门外的 DOM 顺序坑 |
+| [38-shell-alarm.md](38-shell-alarm.md) | 让 AI 叫你起床：系统时钟不认铃声→壳自己当闹钟，setAlarmClock＋前台服务＋全屏通知权限 |
+| [39-ripples-on-this-day.md](39-ripples-on-this-day.md) | 往年今天的一小段原话：按消息日期找、年退到月、一天固定一段 |
 
 ## 前置条件
 
