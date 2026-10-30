@@ -102,6 +102,8 @@ memory.db（数据持久化）
 | [37-voice-notes.md](37-voice-notes.md) | 用户发语音条：按住/轻点两种手势、预览、SenseVoice 转写带情绪和声音事件、一个把用户锁在门外的 DOM 顺序坑 |
 | [38-shell-alarm.md](38-shell-alarm.md) | 让 AI 叫你起床：系统时钟不认铃声→壳自己当闹钟，setAlarmClock＋前台服务＋全屏通知权限 |
 | [39-ripples-on-this-day.md](39-ripples-on-this-day.md) | 往年今天的一小段原话：按消息日期找、年退到月、一天固定一段 |
+| [40-favorites.md](40-favorites.md) | 收藏：两个前端共用一本、存原文各自重画、稳定的消息钥匙、AI 自己也能收 |
+| [41-bill-and-context.md](41-bill-and-context.md) | 账单与上下文：从会话记录算每轮花费、上下文圆环、按天记账进月度小票 |
 
 ## 前置条件
 
