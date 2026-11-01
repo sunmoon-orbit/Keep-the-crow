@@ -104,6 +104,8 @@ memory.db（数据持久化）
 | [39-ripples-on-this-day.md](39-ripples-on-this-day.md) | 往年今天的一小段原话：按消息日期找、年退到月、一天固定一段 |
 | [40-favorites.md](40-favorites.md) | 收藏：两个前端共用一本、存原文各自重画、稳定的消息钥匙、AI 自己也能收 |
 | [41-bill-and-context.md](41-bill-and-context.md) | 账单与上下文：从会话记录算每轮花费、上下文圆环、按天记账进月度小票 |
+| [42-peek-window.md](42-peek-window.md) | 窗：用户允许时让 AI 看一眼手机屏幕（自己壳里的无障碍截图、每次都提醒、服务端闸门）|
+| [43-recall-feedback.md](43-recall-feedback.md) | 自动召回摊给用户标对错，排序改成「用进，不废退」，长说明文件的「顺序即权重」|
 
 ## 前置条件
 
