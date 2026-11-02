@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>言叽搭建攻略</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, 'Segoe UI', sans-serif;
+    background: #faf8fc;
+    color: #2d2640;
+    line-height: 1.7;
+    padding: 32px 16px;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+  h1 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #6b5ea8;
+    margin-bottom: 4px;
+  }
+  .subtitle {
+    color: #9488b0;
+    font-size: 0.9rem;
+    margin-bottom: 32px;
+  }
+  h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #4a3f72;
+    margin: 28px 0 12px;
+    padding-left: 10px;
+    border-left: 3px solid #bfb5d8;
+  }
+  h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #6b5ea8;
+    margin: 18px 0 8px;
+  }
+  p { margin-bottom: 10px; color: #3a3350; font-size: 0.93rem; }
+  ul { padding-left: 20px; margin-bottom: 10px; }
+  li { margin-bottom: 6px; font-size: 0.93rem; color: #3a3350; }
+  code {
+    background: #ede8f5;
+    color: #5a4a8a;
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-family: 'Fira Code', 'Cascadia Code', monospace;
+  }
+  pre {
+    background: #2a2040;
+    color: #e0d8f0;
+    border-radius: 10px;
+    padding: 16px;
+    overflow-x: auto;
+    margin: 10px 0 14px;
+    font-size: 0.82rem;
+    font-family: 'Fira Code', 'Cascadia Code', monospace;
+    line-height: 1.6;
+  }
+  .trap {
+    background: #fff3f3;
+    border-left: 3px solid #e88;
+    border-radius: 0 8px 8px 0;
+    padding: 12px 16px;
+    margin: 12px 0;
+  }
+  .trap .trap-label {
+    font-weight: 700;
+    color: #c05050;
+    font-size: 0.85rem;
+    margin-bottom: 6px;
+  }
+  .tip {
+    background: #f0f9f0;
+    border-left: 3px solid #7bc87b;
+    border-radius: 0 8px 8px 0;
+    padding: 12px 16px;
+    margin: 12px 0;
+  }
+  .tip .tip-label {
+    font-weight: 700;
+    color: #3a8a3a;
+    font-size: 0.85rem;
+    margin-bottom: 6px;
+  }
+  .tag {
+    display: inline-block;
+    background: #ede8f5;
+    color: #6b5ea8;
+    font-size: 0.78rem;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-right: 4px;
+    margin-bottom: 6px;
+  }
+  hr { border: none; border-top: 1px solid #e0d8f0; margin: 28px 0; }
+  .step {
+    counter-increment: step;
+    background: white;
+    border: 1px solid #e0d8f0;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 10px;
+  }
+  .step-num {
+    display: inline-block;
+    background: #bfb5d8;
+    color: white;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 22px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    margin-right: 8px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h1>言叽 · 搭建攻略</h1>
+  <p class="subtitle">一只工程乌鸦的踩坑日记 — 写给想自己部署的朋友</p>
+
+  <h2>📦 技术栈</h2>
+  <span class="tag">React 18</span>
+  <span class="tag">Vite 6</span>
+  <span class="tag">Zustand</span>
+  <span class="tag">marked + highlight.js</span>
+  <span class="tag">GitHub Pages</span>
+
+  <ul>
+    <li><strong>React + Vite</strong>：构建快，HMR 流畅，适合单人维护</li>
+    <li><strong>Zustand</strong>：比 Redux 轻得多，状态直接持久化到 localStorage</li>
+    <li><strong>marked</strong>：把 AI 返回的 Markdown 渲染成 HTML，支持代码高亮</li>
+    <li>部署在 <strong>GitHub Pages</strong>，不需要自己的服务器</li>
+  </ul>
+
+  <hr>
+
+  <h2>🚀 部署流程</h2>
+
+  <div class="step">
+    <span class="step-num">1</span>
+    <strong>初始化项目结构</strong>
+    <pre>your-repo/
+├── yanji-src/        ← Vite 源码
+│   ├── index.html
+│   ├── vite.config.js
+│   ├── package.json
+│   └── src/
+└── .github/
+    └── workflows/
+        └── yanji-build.yml</pre>
+  </div>
+
+  <div class="step">
+    <span class="step-num">2</span>
+    <strong>配置 vite.config.js</strong>
+    <pre>export default {
+  base: '/your-repo-name/yanji/',
+  build: {
+    outDir: '../yanji',
+    emptyOutDir: true,
+  },
+}</pre>
+  </div>
+
+  <div class="step">
+    <span class="step-num">3</span>
+    <strong>配置 GitHub Actions</strong>
+    <p>在 <code>.github/workflows/yanji-build.yml</code> 里写自动构建脚本，push 到 <code>yanji-src/**</code> 时触发 npm install → vite build → git commit → git push。</p>
+  </div>
+
+  <div class="step">
+    <span class="step-num">4</span>
+    <strong>在 GitHub 仓库 Settings → Pages 开启</strong>
+    <p>Source 选 <code>Deploy from a branch</code>，Branch 选 <code>main</code>，根目录选 <code>/</code>（不是 <code>/docs</code>）。</p>
+  </div>
+
+  <hr>
+
+  <h2>⚠️ 避坑指南</h2>
+
+  <h3>坑一：index.html 里的 script 路径</h3>
+  <div class="trap">
+    <div class="trap-label">❌ 错误写法</div>
+    <pre>&lt;script type="module" src="/your-repo/yanji/src/main.jsx"&gt;&lt;/script&gt;</pre>
+  </div>
+  <div class="tip">
+    <div class="tip-label">✅ 正确写法</div>
+    <pre>&lt;script type="module" src="/src/main.jsx"&gt;&lt;/script&gt;</pre>
+    <p>Vite 开发服务器以 <code>yanji-src/</code> 为根目录运行，<code>index.html</code> 里只需要写相对于这个根的路径。绝对路径加上 repo 名会找不到文件。</p>
+  </div>
+
+  <h3>坑二：GitHub PAT 需要 workflow 权限</h3>
+  <div class="trap">
+    <div class="trap-label">❌ 症状</div>
+    <p>push 时报错 <code>refusing to allow a Personal Access Token to create or update workflow</code></p>
+  </div>
+  <div class="tip">
+    <div class="tip-label">✅ 解决</div>
+    <p>生成 PAT 时勾选 <code>workflow</code> scope（默认不勾，但推送 <code>.github/workflows/</code> 里的文件必须有这个权限）。</p>
+    <p>更新 remote URL：</p>
+    <pre>git remote set-url origin https://NEW_TOKEN@github.com/你的用户名/仓库名.git</pre>
+  </div>
+
+  <h3>坑三：push 大文件超时 / RPC failed curl 55</h3>
+  <div class="trap">
+    <div class="trap-label">❌ 症状</div>
+    <p>push 时卡住，或者报 <code>RPC failed; curl 55 Send failure</code></p>
+  </div>
+  <div class="tip">
+    <div class="tip-label">✅ 解决</div>
+    <pre>git config http.postBuffer 524288000
+git config http.version HTTP/1.1</pre>
+    <p>前者把缓冲区加到 500MB，后者避免 HTTP/2 多路复用带来的连接问题。</p>
+  </div>
+
+  <h3>坑四：emptyOutDir: true 会清空输出目录</h3>
+  <div class="trap">
+    <div class="trap-label">⚠️ 注意</div>
+    <p>如果 <code>outDir</code> 指向 <code>../yanji</code>，开了 <code>emptyOutDir: true</code> 后每次构建会先删掉 <code>yanji/</code> 里的所有文件再重新生成。</p>
+  </div>
+  <div class="tip">
+    <div class="tip-label">✅ 好处 &amp; 风险</div>
+    <p>好处：不会留下旧的过时文件。风险：如果 yanji/ 下还有手动放的其他文件，会一起被删。确认只用来放构建产物就可以放心开启。</p>
+  </div>
+
+  <h3>坑五：node_modules 被 git 追踪</h3>
+  <div class="trap">
+    <div class="trap-label">❌ 症状</div>
+    <p>第一次 commit 时把 <code>yanji-src/node_modules/</code> 全推上去了，push 超慢或直接超时</p>
+  </div>
+  <div class="tip">
+    <div class="tip-label">✅ 解决</div>
+    <p>先在 <code>.gitignore</code> 里加上 <code>node_modules/</code>，然后从 git index 里移除（不删本地文件）：</p>
+    <pre>git rm -r --cached yanji-src/node_modules/
+git commit -m "remove node_modules from tracking"</pre>
+  </div>
+
+  <hr>
+
+  <h2>🔐 记忆库 API 权限设计</h2>
+  <p>如果你的言叽接入了外部记忆库（比如 moon-memory），给 AI 工具调用开权限时要注意：</p>
+  <ul>
+    <li>✅ <strong>允许</strong>：搜索记忆、写入新记忆</li>
+    <li>❌ <strong>禁止</strong>：删除记忆</li>
+  </ul>
+  <p>只暴露 <code>search_memories</code> 和 <code>write_memory</code> 两个工具定义，不在 AI 可调用的工具列表里加删除接口。这样即使 AI 判断失误，也不会把重要记忆删掉。</p>
+
+  <pre>// 只暴露这两个给 AI
+const AI_TOOLS = [
+  { name: 'search_memories', ... },
+  { name: 'write_memory', ... },
+  // ← 没有 delete_memory，永远不加
+]</pre>
+
+  <hr>
+
+  <h2>💜 最后</h2>
+  <p>言叽是一个支持多 API 连接、流式输出、DeepSeek / Anthropic 思考链展示、以及可选接入记忆库的轻量聊天前端。整体代码量不大，适合自己二次改造。</p>
+  <p>如果在搭建过程中遇到问题，欢迎找工程乌鸦继续聊。</p>
+
+</div>
+</body>
+</html>

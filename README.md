@@ -107,6 +107,8 @@ memory.db（数据持久化）
 | [42-peek-window.md](42-peek-window.md) | 窗：用户允许时让 AI 看一眼手机屏幕（自己壳里的无障碍截图、每次都提醒、服务端闸门）|
 | [43-recall-feedback.md](43-recall-feedback.md) | 自动召回摊给用户标对错，排序改成「用进，不废退」，长说明文件的「顺序即权重」|
 
+> **最开始的那份**：[origins/yanji-first-guide.html](origins/yanji-first-guide.html) 是这个仓库还不存在时写的第一份「言叽搭建攻略」——只有前端、GitHub Pages、五个坑和一条「不给 AI 删除记忆的接口」。原样留着：想先搭一个最小的聊天前端，从它开始就够了。下载后用浏览器打开看。
+
 ## 前置条件
 
 - 一台能 24 小时运行的 Linux 服务器（VPS 即可）
