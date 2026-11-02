@@ -106,6 +106,7 @@ memory.db（数据持久化）
 | [41-bill-and-context.md](41-bill-and-context.md) | 账单与上下文：从会话记录算每轮花费、上下文圆环、按天记账进月度小票 |
 | [42-peek-window.md](42-peek-window.md) | 窗：用户允许时让 AI 看一眼手机屏幕（自己壳里的无障碍截图、每次都提醒、服务端闸门）|
 | [43-recall-feedback.md](43-recall-feedback.md) | 自动召回摊给用户标对错，排序改成「用进，不废退」，长说明文件的「顺序即权重」|
+| [44-pip-and-wake.md](44-pip-and-wake.md) | 通话小窗（系统画中画）、让 AI 自己醒来找人（清单交给用户改）、转写没超时锁死麦克风 |
 
 > **最开始的两份**：这个仓库还不存在时写的，原样留着，想先搭个最小的版本从它们开始就够。
 > - [origins/memory-first-guide.md](origins/memory-first-guide.md)（2026.5.19）：给 AI 伴侣搭一个记忆库：一台免费小鸡、MCP + REST 双接口、Caddy + pm2、四个坑、记忆类型表。
