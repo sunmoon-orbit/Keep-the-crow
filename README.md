@@ -137,6 +137,7 @@ memory.db（数据持久化）
 
 **记忆架构**
 - **Paramecium**（草履虫记忆架构）by [@Shitsuten](https://github.com/Shitsuten/paramecium)：L0/L1/L2 三层存档架构、FTS5 + 向量混合搜索、prompt cache 分层优化
+- [lilysttail/Resurface](https://github.com/lilysttail/Resurface)（MIT）：长多会话聊天的证据检索；借了「命中一句话时把前后相邻的几句一起带上」的邻句思路（43 篇第六节），代码独立实现
 
 **共读与批注**
 - [Lumenocturne/coread](https://github.com/Lumenocturne/coread)：人机共读系统
